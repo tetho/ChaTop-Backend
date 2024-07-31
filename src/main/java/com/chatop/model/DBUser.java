@@ -1,7 +1,5 @@
 package com.chatop.model;
 
-import java.sql.Timestamp;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,11 +10,9 @@ public class DBUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	private String email;
-	private String name;
+	private String username;
 	private String password;
-	private Timestamp created_at;
-	private Timestamp updated_at;
+	private String role;
 	
 	public Integer getId() {
 		return id;
@@ -26,20 +22,12 @@ public class DBUser {
 		this.id = id;
 	}
 	
-	public String getEmail() {
-		return email;
+	public String getUsername() {
+		return username;
 	}
 	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	public String getPassword() {
@@ -49,21 +37,13 @@ public class DBUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public Timestamp getCreated_at() {
-		return created_at;
+	public String getRole() {
+		return role;
 	}
 	
-	public void setCreated_at(Timestamp created_at) {
-		this.created_at = created_at;
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
-	public Timestamp getUpdated_at() {
-		return updated_at;
-	}
-	
-	public void setUpdated_at(Timestamp updated_at) {
-		this.updated_at = updated_at;
-	}
 			
 }
