@@ -1,10 +1,12 @@
 package com.chatop.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.chatop.model.DBUser;
 
-public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
+public interface DBUserRepository extends JpaRepository<DBUser, Long> {
 	
-	public DBUser findByUsername(String username);
+	public Optional<DBUser> findByUsername(String username);
 }

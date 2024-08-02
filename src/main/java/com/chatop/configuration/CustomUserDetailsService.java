@@ -10,21 +10,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.chatop.model.DBUser;
-import com.chatop.repository.DBUserRepository;
+
+import com.chatop.dto.DBUserDTO;
+import com.chatop.service.DBUserService;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
-	private DBUserRepository dbUserRepository;
+	private DBUserService dbUserService;
 
-	private static String role = "USER";
-	
 	@Override
-	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		DBUser user = dbUserRepository.findByUsername(email);
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		DBUserDTO dbUser = dbUserService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
 		
-		return new User(user.getUsername(), user.getPassword(), getGrantedAuthorities(role));
+		return new User(dbUser.getUsername(), dbUser.getPassword(), getGrantedAuthorities("ROLE_" + dbUser.getRole()));
 	}
 
 	private List<GrantedAuthority> getGrantedAuthorities(String role) {

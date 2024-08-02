@@ -1,5 +1,6 @@
 package com.chatop.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -12,27 +13,29 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "dbuser")
-public class DBUser {
-	
+@Table(name = "rentals")
+public class Rental {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String username;
-	
-	private String password;
-	
-	private String role;
-	
-	private String email;
-	
 	private String name;
+	
+	private BigDecimal surface;
+	
+	private BigDecimal price;
+	
+	private String picture;
+	
+	private String description;
+	
+	@Column(name = "owner_id")
+	private Long ownerId;
 	
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 	
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
-	
 }

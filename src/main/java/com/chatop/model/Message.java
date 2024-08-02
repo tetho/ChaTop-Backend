@@ -12,27 +12,24 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "dbuser")
-public class DBUser {
-	
+@Table(name = "messages")
+public class Message {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String username;
+	@Column(name = "rental_id")
+	private Long rentalId;
 	
-	private String password;
+	@Column(name = "user_id")
+	private Long userId;
 	
-	private String role;
-	
-	private String email;
-	
-	private String name;
+	private String message;
 	
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 	
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
-	
 }
