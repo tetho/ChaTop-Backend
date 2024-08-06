@@ -2,12 +2,14 @@ package com.chatop.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
 public class RentalDTO {
 
-	private Long id;
+	private Integer id;
 	
 	private String name;
 	
@@ -19,5 +21,6 @@ public class RentalDTO {
 	
 	private String description;
 	
-	private Long ownerId;
+	@JsonProperty("owner_id")
+	private Integer ownerId;
 }

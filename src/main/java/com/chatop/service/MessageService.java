@@ -18,7 +18,7 @@ public class MessageService {
 	@Autowired
 	MessageRepository messageRepository;
 	
-	public Optional<MessageDTO> getMessage(final Long id) {
+	public Optional<MessageDTO> getMessage(final Integer id) {
 		return messageRepository.findById(id)
 				.map(MessageMapper.INSTANCE::toDTO);
 	}
@@ -29,7 +29,7 @@ public class MessageService {
                 .collect(Collectors.toList());
 	}
 	
-	public void deleteMessage(final Long id) {
+	public void delete(final Integer id) {
 		if (messageRepository.existsById(id)) {
 			messageRepository.deleteById(id);	
 		} else {
@@ -37,8 +37,9 @@ public class MessageService {
 		}
 	}
 	
-	public Message saveMessage(final Message message) {
-		Message savedMessage = messageRepository.save(message);
+	public MessageDTO save(final MessageDTO messageDTO) {
+		Message message = MessageMapper.INSTANCE.toEntity(messageDTO);
+		MessageDTO savedMessage = MessageMapper.INSTANCE.toDTO(messageRepository.save(message));
 		return savedMessage;
 	}
 }

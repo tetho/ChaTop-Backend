@@ -18,7 +18,7 @@ public class Rental {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	
 	private String name;
 	
@@ -31,7 +31,7 @@ public class Rental {
 	private String description;
 	
 	@Column(name = "owner_id")
-	private Long ownerId;
+	private Integer ownerId;
 	
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;

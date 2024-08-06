@@ -1,15 +1,14 @@
 package com.chatop.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class AuthDTO {
 
-	private Integer id;
-	
+	@JsonProperty("login")
 	private String email;
-	
-	private String name;
 	
 	private String password;
 }

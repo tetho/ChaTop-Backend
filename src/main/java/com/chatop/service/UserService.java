@@ -1,9 +1,6 @@
 package com.chatop.service;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,35 +9,23 @@ import com.chatop.mapper.UserMapper;
 import com.chatop.model.User;
 import com.chatop.repository.UserRepository;
 
-
 @Service
 public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 	
-	public Optional<UserDTO> findByName(String name) {
-        return userRepository.findByName(name)
-        		.map(UserMapper.INSTANCE::toDTO);
-    }
-	
 	public Optional<UserDTO> findByEmail(String email) {
         return userRepository.findByEmail(email)
         		.map(UserMapper.INSTANCE::toDTO);
     }
 	
-	public Optional<UserDTO> getUser(final Long id) {
+	public Optional<UserDTO> getUser(final Integer id) {
 		return userRepository.findById(id)
 				.map(UserMapper.INSTANCE::toDTO);
 	}
 	
-	public Iterable<UserDTO> getUsers() {
-		return StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .map(UserMapper.INSTANCE::toDTO)
-                .collect(Collectors.toList());
-	}
-	
-	public void deleteUser(final Long id) {
+	public void delete(final Integer id) {
 		if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         } else {
@@ -48,7 +33,7 @@ public class UserService {
         }
 	}
 	
-	public UserDTO saveUser(final UserDTO userDTO) {
+	public UserDTO save(final UserDTO userDTO) {
 		User user = UserMapper.INSTANCE.toEntity(userDTO);
 		UserDTO savedUser = UserMapper.INSTANCE.toDTO(userRepository.save(user));
 		return savedUser;

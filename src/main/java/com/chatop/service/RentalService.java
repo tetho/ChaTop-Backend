@@ -18,7 +18,7 @@ public class RentalService {
 	@Autowired
 	RentalRepository rentalRepository;
 	
-	public Optional<RentalDTO> getRental(final Long id) {
+	public Optional<RentalDTO> getRental(final Integer id) {
 		return rentalRepository.findById(id)
 				.map(RentalMapper.INSTANCE::toDTO);
 	}
@@ -29,7 +29,7 @@ public class RentalService {
                 .collect(Collectors.toList());
 	}
 	
-	public void deleteRental(final Long id) {
+	public void delete(final Integer id) {
 		if (rentalRepository.existsById(id)) {
 			rentalRepository.deleteById(id);			
 		} else {
@@ -37,8 +37,14 @@ public class RentalService {
         }
 	}
 	
-	public RentalDTO saveRental(final RentalDTO rentalDTO) {
+	public RentalDTO save(final RentalDTO rentalDTO) {
 		Rental rental = RentalMapper.INSTANCE.toEntity(rentalDTO);
+		rental.setName(rentalDTO.getName());
+        rental.setSurface(rentalDTO.getSurface());
+        rental.setPrice(rentalDTO.getPrice());
+        rental.setPicture(rentalDTO.getPicture());
+        rental.setDescription(rentalDTO.getDescription());
+        rental.setOwnerId(rentalDTO.getOwnerId());
 		RentalDTO savedRental = RentalMapper.INSTANCE.toDTO(rentalRepository.save(rental));
 		return savedRental;
 	}

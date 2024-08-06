@@ -6,25 +6,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatop.dto.MessageDTO;
-import com.chatop.model.Message;
 import com.chatop.service.MessageService;
 
 @RestController
+@RequestMapping("/api/messages")
 public class MessageController {
 
-	@Autowired
 	MessageService messageService;
 	
-	@GetMapping("/messages")
+	@Autowired
+	public MessageController(MessageService messageService) {
+		this.messageService = messageService;
+	}
+	
+	@GetMapping
 	public Iterable<MessageDTO> getMessages() {
 		return messageService.getMessages();
 	}
 	
-	@PostMapping("/messages")
-	public ResponseEntity<String> createMessage(@RequestBody Message message) {
+	@PostMapping
+	public ResponseEntity<String> createMessage(@RequestBody MessageDTO message) {
+		messageService.save(message);
 		return new ResponseEntity<>("Message send with success", HttpStatus.OK); 
 	}
 }

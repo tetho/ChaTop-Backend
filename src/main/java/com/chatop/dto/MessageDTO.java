@@ -1,15 +1,19 @@
 package com.chatop.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 @Data
 public class MessageDTO {
 
-	private Long id;
+	private Integer id;
 	
-	private Long rentalId;
+	@JsonProperty("rental_id")
+	private Integer rentalId;
 	
-	private Long userId;
+	@JsonProperty("user_id")
+	private Integer userId;
 	
 	private String message;
 }

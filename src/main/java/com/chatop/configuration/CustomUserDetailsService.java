@@ -11,21 +11,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.chatop.dto.DBUserDTO;
-import com.chatop.service.DBUserService;
+import com.chatop.dto.UserDTO;
+import com.chatop.service.UserService;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
-	private DBUserService dbUserService;
+	private UserService userService;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		DBUserDTO dbUser = dbUserService.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		UserDTO user = userService.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 		
-		return new User(dbUser.getUsername(), dbUser.getPassword(), getGrantedAuthorities("ROLE_" + dbUser.getRole()));
+		return new User(user.getEmail(), user.getPassword(), getGrantedAuthorities("USER"));
 	}
 
 	private List<GrantedAuthority> getGrantedAuthorities(String role) {
