@@ -2,6 +2,7 @@ package com.chatop.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
@@ -15,5 +16,6 @@ public class MessageDTO {
 	@JsonProperty("user_id")
 	private Integer userId;
 	
+	@NotEmpty(message = "Message is required")
 	private String message;
 }
