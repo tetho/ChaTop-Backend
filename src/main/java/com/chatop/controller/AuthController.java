@@ -80,6 +80,7 @@ public class AuthController {
 		if (isAuthenticated) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
 			String token = jwtService.generateToken(authentication);
+			System.out.print("token " + token);
 			return ResponseEntity.ok(token);
 		} else {
 			return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);

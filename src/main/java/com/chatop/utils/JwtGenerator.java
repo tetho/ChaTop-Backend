@@ -8,7 +8,7 @@ import com.chatop.service.JWTService;
 
 public class JwtGenerator {
 
-    private static final String SECRET_KEY = "MaoMCfSiuncRcMfraSQlw9Vw4yRRetVc";
+    private static final String SECRET_KEY = "aaSwDbRdKcpElZwUk36tYpaNvEkKw0PxUYx1062p7X4=";
 
     JWTService jwtService;
     

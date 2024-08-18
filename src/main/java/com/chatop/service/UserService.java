@@ -16,8 +16,8 @@ public class UserService {
 	private UserRepository userRepository;
 	
 	public Optional<UserDTO> findByEmail(String email) {
-        return userRepository.findByEmail(email)
-        		.map(UserMapper.INSTANCE::toDTO);
+		Optional<User> user = userRepository.findByEmail(email);
+	    return user.map(UserMapper.INSTANCE::toDTO);
     }
 	
 	public Optional<UserDTO> getUser(final Integer id) {

@@ -22,7 +22,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-	private String jwtKey = "MaoMCfSiuncRcMfraSQlw9Vw4yRRetVc";
+	private String jwtKey = "aaSwDbRdKcpElZwUk36tYpaNvEkKw0PxUYx1062p7X4=";
 
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {        
@@ -30,9 +30,8 @@ public class SpringSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                		.requestMatchers("/api/**").authenticated()
-                		.anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+                	    .requestMatchers("/api/auth/me", "/api/rentals/**", "/api/messages/**").authenticated()
+                	    .anyRequest().permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
                 .build();       
     }
@@ -49,8 +48,7 @@ public class SpringSecurityConfig {
 	
 	@Bean
 	public JwtDecoder jwtDecoder() {
-	    SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length,"RSA");
-	    return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
+	    return NimbusJwtDecoder.withSecretKey(new SecretKeySpec(this.jwtKey.getBytes(), "HmacSHA256")).build();
 	}
 
 }
