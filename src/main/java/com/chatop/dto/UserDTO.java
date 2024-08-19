@@ -1,5 +1,9 @@
 package com.chatop.dto;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -18,4 +22,10 @@ public class UserDTO {
 	
 	@NotEmpty(message = "Password is required")
 	private String password;
+	
+	@JsonProperty("created_at")
+	private LocalDateTime createdAt;
+	
+	@JsonProperty("updated_at")
+	private LocalDateTime updatedAt;
 }

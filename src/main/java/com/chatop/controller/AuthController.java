@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chatop.dto.AuthDTO;
+import com.chatop.dto.JwtDTO;
 import com.chatop.dto.UserDTO;
 import com.chatop.service.AuthService;
 import com.chatop.service.JWTService;
@@ -54,7 +55,7 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "Utilisateur enregistré avec succès"),
         @ApiResponse(responseCode = "400", description = "Données d'entrée invalides")
     })
-	public ResponseEntity<String> register(@Valid @RequestBody UserDTO user, BindingResult result) {
+	public ResponseEntity<?> register(@Valid @RequestBody UserDTO user, BindingResult result) {
 		if (result.hasErrors()) {
 			String errorMessages = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -62,7 +63,11 @@ public class AuthController {
 			return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
 		} else {
 			authService.register(user);
-			return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+			Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+			String token = jwtService.generateToken(authentication);
+			JwtDTO jwtDTO = new JwtDTO();
+			jwtDTO.setToken(token);
+			return ResponseEntity.ok(jwtDTO);
 		}
 	}
 
@@ -74,14 +79,15 @@ public class AuthController {
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class)))
     })
-	public ResponseEntity<String> login(@RequestBody AuthDTO user) {
+	public ResponseEntity<?> login(@RequestBody AuthDTO user) {
 		boolean isAuthenticated = authService.authenticate(user.getEmail(), user.getPassword());
 
 		if (isAuthenticated) {
 			Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
 			String token = jwtService.generateToken(authentication);
-			System.out.print("token " + token);
-			return ResponseEntity.ok(token);
+			JwtDTO jwtDTO = new JwtDTO();
+			jwtDTO.setToken(token);
+			return ResponseEntity.ok(jwtDTO);
 		} else {
 			return new ResponseEntity<>("Invalid username or password", HttpStatus.UNAUTHORIZED);
 		}
