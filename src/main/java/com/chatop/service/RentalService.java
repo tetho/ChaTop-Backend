@@ -1,5 +1,6 @@
 package com.chatop.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chatop.dto.RentalDTO;
+import com.chatop.dto.RentalsDTO;
 import com.chatop.mapper.RentalMapper;
 import com.chatop.model.Rental;
 import com.chatop.repository.RentalRepository;
@@ -23,10 +25,13 @@ public class RentalService {
 				.map(RentalMapper.INSTANCE::toDTO);
 	}
 	
-	public Iterable<RentalDTO> getRentals() {
-		return StreamSupport.stream(rentalRepository.findAll().spliterator(), false)
+	public RentalsDTO getRentals() {
+		List<RentalDTO> rentals = StreamSupport.stream(rentalRepository.findAll().spliterator(), false)
                 .map(RentalMapper.INSTANCE::toDTO)
                 .collect(Collectors.toList());
+		RentalsDTO rentalsDTO = new RentalsDTO();
+		rentalsDTO.setRentals(rentals);
+        return rentalsDTO;
 	}
 	
 	public void delete(final Integer id) {

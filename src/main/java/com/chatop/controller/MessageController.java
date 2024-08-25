@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.chatop.dto.MessageDTO;
 import com.chatop.service.MessageService;
+import com.chatop.utils.CustomApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,15 +46,17 @@ public class MessageController {
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class)))
     })
-	public ResponseEntity<String> createMessage(@Valid @RequestBody MessageDTO message, BindingResult result) {
+	public ResponseEntity<CustomApiResponse<MessageDTO>> createMessage(@Valid @RequestBody MessageDTO message, BindingResult result) {
 		if (result.hasErrors()) {
 			String errorMessages = result.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.joining(", "));
-			return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+			CustomApiResponse<MessageDTO> response = new CustomApiResponse<>(null, errorMessages);
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		} else {
-			messageService.save(message);
-			return new ResponseEntity<>("Message send with success", HttpStatus.OK);
+			MessageDTO messageDTO = messageService.save(message);
+			CustomApiResponse<MessageDTO> response = new CustomApiResponse<>(messageDTO, "Message send with success");
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		}
 	}
 }

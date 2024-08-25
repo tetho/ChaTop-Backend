@@ -1,21 +1,34 @@
 package com.chatop.controller;
 
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.chatop.dto.RentalDTO;
+import com.chatop.dto.RentalsDTO;
+import com.chatop.dto.UserDTO;
 import com.chatop.service.RentalService;
+import com.chatop.service.UserService;
+import com.chatop.utils.CustomApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +43,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class RentalController {
 
 	RentalService rentalService;
+	UserService userService;
 	
 	@Autowired
-	public RentalController(RentalService rentalService) {
+	public RentalController(RentalService rentalService, UserService userService) {
 		this.rentalService = rentalService;
+		this.userService = userService;
 	}
 	
 	@GetMapping
@@ -44,8 +59,9 @@ public class RentalController {
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class)))
     })
-	public Iterable<RentalDTO> getRentals() {
-		return rentalService.getRentals();
+	public ResponseEntity<RentalsDTO> getRentals() {
+		RentalsDTO rentalsDTO = rentalService.getRentals();
+        return new ResponseEntity<>(rentalsDTO, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
@@ -70,9 +86,30 @@ public class RentalController {
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class))),
     })
-	public ResponseEntity<RentalDTO> createRental(@RequestBody RentalDTO rentalDTO) {
-		RentalDTO createdRental = rentalService.save(rentalDTO);
-        return new ResponseEntity<>(createdRental, HttpStatus.OK);
+	public ResponseEntity<CustomApiResponse<RentalDTO>> createRental(
+			@RequestParam("name") String name,
+	        @RequestParam("surface") BigDecimal surface,
+	        @RequestParam("price") BigDecimal price,
+	        @RequestParam("description") String description,
+	        @RequestParam("picture") MultipartFile picture,
+	        Authentication authentication) {
+		String picturePath = uploadPicture(picture);
+		
+		String email = authentication.getName();
+		UserDTO userDTO = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Integer ownerId = userDTO.getId();
+		
+	    RentalDTO rentalDTO = new RentalDTO();
+	    rentalDTO.setName(name);
+	    rentalDTO.setSurface(surface);
+	    rentalDTO.setPrice(price);
+	    rentalDTO.setDescription(description);
+	    rentalDTO.setOwnerId(ownerId);
+	    rentalDTO.setPicture(picturePath);
+	    rentalService.save(rentalDTO);
+	    CustomApiResponse<RentalDTO> response = new CustomApiResponse<>(rentalDTO, "Rental created !");
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}")
@@ -83,17 +120,46 @@ public class RentalController {
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class))),
     })
-	public ResponseEntity<String> updateRental(@PathVariable Integer id) {
-		Optional<RentalDTO> optionalRental = rentalService.getRental(id);
-		
-		if (optionalRental.isPresent()) {
-			RentalDTO rental = optionalRental.get();
-			
-			rentalService.save(rental);
-			
-			return new ResponseEntity<>("Rental updated !", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("Rental not found", HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<CustomApiResponse<RentalDTO>> updateRental(
+			@PathVariable Integer id,
+			@RequestParam("name") String name,
+	        @RequestParam("surface") BigDecimal surface,
+	        @RequestParam("price") BigDecimal price,
+	        @RequestParam("description") String description) {
+		RentalDTO rentalDTO = rentalService.getRental(id)
+				.orElseThrow(() -> new RuntimeException("Rental not found"));
+		rentalDTO.setName(name);
+	    rentalDTO.setSurface(surface);
+	    rentalDTO.setPrice(price);
+	    rentalDTO.setDescription(description);
+	    rentalService.save(rentalDTO);
+	    CustomApiResponse<RentalDTO> response = new CustomApiResponse<>(rentalDTO, "Rental updated !");
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+
+    private String uploadPicture(MultipartFile picture) {
+        if (picture.isEmpty()) {
+            throw new IllegalArgumentException("Picture file is empty");
+        }
+
+        try {
+        	String uploadDir = "src/main/resources/static/uploads/";
+            
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            
+            String fileName = UUID.randomUUID().toString() + "_" + picture.getOriginalFilename();
+
+            Path filePath = Paths.get(uploadDir, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.copy(picture.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return "http://localhost:3001/uploads/" + fileName;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload picture", e);
+        }
+    }
 }

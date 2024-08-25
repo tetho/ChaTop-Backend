@@ -1,6 +1,7 @@
 package com.chatop.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -23,4 +24,10 @@ public class RentalDTO {
 	
 	@JsonProperty("owner_id")
 	private Integer ownerId;
+	
+	@JsonProperty("created_at")
+	private LocalDateTime createdAt;
+	
+	@JsonProperty("updated_at")
+	private LocalDateTime updatedAt;
 }
