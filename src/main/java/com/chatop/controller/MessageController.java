@@ -41,7 +41,9 @@ public class MessageController {
 	@Operation(summary = "Créer un message", description = "Crée et enregistre un nouveau message.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Message envoyé avec succès"),
-        @ApiResponse(responseCode = "400", description = "Requête invalide, données du message incorrectes"),
+        @ApiResponse(responseCode = "400", description = "Requête invalide, données du message incorrectes", content = @Content(
+        		mediaType = MediaType.APPLICATION_JSON_VALUE, 
+        		schema = @Schema(implementation = Object.class))),
         @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié", content = @Content(
         		mediaType = MediaType.APPLICATION_JSON_VALUE, 
         		schema = @Schema(implementation = Object.class)))
