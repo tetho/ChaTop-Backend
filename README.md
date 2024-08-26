@@ -1,9 +1,7 @@
-# ChaTop Back-end
+# ChaTop
 
 ## Description
 ChaTop un portail en ligne pour permettre aux locataires potentiels de contacter les propriétaires des différentes propriétés qu'ils souhaitent louer.
-
-Le back-end de ChaTop est une application Spring Boot qui fournit une API RESTful pour gérer les propriétés à louer, les utilisateurs, et les interactions entre locataires et propriétaires.
 
 ## Technologies utilisées
 - Spring Boot
@@ -28,10 +26,12 @@ Le back-end de ChaTop est une application Spring Boot qui fournit une API RESTfu
 - Java 11 ou version ultérieure
 - Maven
 - MySQL
+- Angular 18.0.6
+- Node.js 20.13.1
 
-### Configuration
+### Configuration du Back-end
 
-Cloner le dépôt : 
+Clonez le dépôt : 
 
 > git clone https://github.com/tetho/ChaTop-Backend.git
 
@@ -44,6 +44,24 @@ Construisez le projet et démarrez l'application :
 > mvn clean install
 
 > mvn spring-boot:run
+
+### Configuration du Front-end
+
+Clonez le dépôt : 
+
+> git clone https://github.com/OpenClassrooms-Student-Center/P3-Full-Stack-portail-locataire
+
+Allez dans le répertoire :
+
+> cd P3-Full-Stack-portail-locataire
+
+Installer les dépendances :
+
+> npm install
+
+Lancer le Front-end :
+
+> npm run start
 
 ## Documentation
 
