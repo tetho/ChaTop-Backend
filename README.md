@@ -68,3 +68,9 @@ Lancer le Front-end :
 La documentation interactive de l'API est générée par Swagger. Vous pouvez y accéder à l'adresse suivante :
 
 > http://localhost:3001/swagger-ui/index.html
+
+### MySQL
+
+Le script SQL de création de la base de données est disponible dans ce répertoire :
+
+> ressources/sql/script.sql
